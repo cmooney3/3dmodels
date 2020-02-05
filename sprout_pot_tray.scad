@@ -80,7 +80,7 @@ module tray_blank() {
         rounded_box(tray_dim_x_mm, tray_dim_y_mm, tray_dim_z_mm, pot_rounded_radius_mm);
 }
 
-module risers() {
+module risers(radius_mm) {
     intersection() {
         for (x = [0 : num_pots_x]) {
             for (y = [0 : num_pots_y]) {
@@ -88,7 +88,7 @@ module risers() {
                 y_offset = y * (pot_top_edge_mm + interpot_spacing_mm) - interpot_spacing_mm / 2;
 
                 translate([x_offset, y_offset, -riser_height_mm])
-                    cylinder(h = riser_height_mm, r = riser_radius_mm);
+                    cylinder(h = riser_height_mm, r = radius_mm);
             }
         }
 
@@ -99,7 +99,7 @@ module risers() {
 module tray_with_risers() {
     union() {
         tray();
-        risers();
+        risers(riser_radius_mm);
     }
 }
 
@@ -130,10 +130,10 @@ module drip_pan() {
     difference() {
         translate([-3 * tray_thickness_mm, -3 * tray_thickness_mm, -riser_height_mm - tray_thickness_mm])
             drip_pan_without_riser_groves();
-        tray_with_risers();
+        risers(riser_radius_mm + 0.5); // Slightly larger riser holes in the pan than the risers so they fit
     }
 }
 
 
 tray_with_risers();
-//drip_pan();
+drip_pan();

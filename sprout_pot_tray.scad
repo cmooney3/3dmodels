@@ -9,17 +9,17 @@
 $fn=50;  // Increase the smoothness for nice round curves
 
 // Set the size of the grid (how many pots in your tray)
-num_pots_x = 2;
+num_pots_x = 3;
 num_pots_y = 3;
 
 // How big of a gap between adjacent trays
-interpot_spacing_mm = 0.4;
+interpot_spacing_mm = 2;
 
 // How big of an outer lip the tray has around the outerpost pots
-tray_thickness_mm = 1;
+tray_thickness_mm = 2;
 
 // How far *below* the top lip of the pots the tray stops
-tray_inset_depth_mm = 1;
+tray_inset_depth_mm = 2;
 
 // The dimensions of the cylindrical risers on the bottom of the tray
 riser_radius_mm = 8;
@@ -84,8 +84,8 @@ module risers() {
     intersection() {
         for (x = [0 : num_pots_x]) {
             for (y = [0 : num_pots_y]) {
-                x_offset = x * (pot_top_edge_mm + interpot_spacing_mm);
-                y_offset = y * (pot_top_edge_mm + interpot_spacing_mm);
+                x_offset = x * (pot_top_edge_mm + interpot_spacing_mm) - interpot_spacing_mm / 2;
+                y_offset = y * (pot_top_edge_mm + interpot_spacing_mm) - interpot_spacing_mm / 2;
 
                 translate([x_offset, y_offset, -riser_height_mm])
                     cylinder(h = riser_height_mm, r = riser_radius_mm);
@@ -136,4 +136,4 @@ module drip_pan() {
 
 
 tray_with_risers();
-drip_pan();
+//drip_pan();

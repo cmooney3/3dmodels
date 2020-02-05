@@ -22,7 +22,7 @@ tray_thickness_mm = 1;
 tray_inset_depth_mm = 1;
 
 // The dimensions of the cylindrical risers on the bottom of the tray
-riser_radius_mm = 4;
+riser_radius_mm = 8;
 riser_height_mm = 6;
 
 // The dimensions and characteristics of the pots
@@ -31,6 +31,15 @@ pot_bottom_edge_mm = 20;
 pot_height_mm = 40;
 pot_rounded_radius_mm = 3;
 
+
+// Computed dimensions of the tray -- derived from the values set above
+tray_dim_x_mm = (pot_top_edge_mm + interpot_spacing_mm) * num_pots_x
+                    - interpot_spacing_mm
+                    + tray_thickness_mm * 2;
+tray_dim_y_mm = (pot_top_edge_mm + interpot_spacing_mm) * num_pots_y
+                    - interpot_spacing_mm
+                    + tray_thickness_mm * 2;
+tray_dim_z_mm = pot_height_mm - tray_inset_depth_mm;
 
 module rounded_box(x_dimension_mm, y_dimension_mm, z_dimension_mm, radius_mm) {
     hull() {
@@ -67,14 +76,6 @@ module grid_of_pots() {
 }
 
 module tray_blank() {
-    tray_dim_x_mm = (pot_top_edge_mm + interpot_spacing_mm) * num_pots_x
-                        - interpot_spacing_mm
-                        + tray_thickness_mm * 2;
-    tray_dim_y_mm = (pot_top_edge_mm + interpot_spacing_mm) * num_pots_y
-                        - interpot_spacing_mm
-                        + tray_thickness_mm * 2;
-    tray_dim_z_mm = pot_height_mm - tray_inset_depth_mm;
-
     translate([-tray_thickness_mm, -tray_thickness_mm, 0]) 
         rounded_box(tray_dim_x_mm, tray_dim_y_mm, tray_dim_z_mm, pot_rounded_radius_mm);
 }
@@ -95,6 +96,13 @@ module risers() {
     }
 }
 
+module tray_with_risers() {
+    union() {
+        tray();
+        risers();
+    }
+}
+
 module tray() {
     difference() {
         tray_blank();
@@ -102,8 +110,30 @@ module tray() {
     }
 }
 
+module drip_pan_without_riser_groves() {
+    inner_pan_dim_x_mm = tray_dim_x_mm + tray_thickness_mm * 2;
+    inner_pan_dim_y_mm = tray_dim_y_mm + tray_thickness_mm * 2;
+    inner_pan_depth_mm = riser_height_mm;
 
-union() {
-    tray();
-    risers();
+    pan_dim_x_mm = inner_pan_dim_x_mm + 2 * tray_thickness_mm;
+    pan_dim_y_mm = inner_pan_dim_y_mm + 2 * tray_thickness_mm;
+    pan_dim_z_mm = inner_pan_depth_mm + 2 * tray_thickness_mm;
+
+    difference() {
+        rounded_box(pan_dim_x_mm, pan_dim_y_mm, pan_dim_z_mm, pot_rounded_radius_mm);
+        translate([tray_thickness_mm, tray_thickness_mm, 2 * tray_thickness_mm])
+            rounded_box(inner_pan_dim_x_mm, inner_pan_dim_y_mm, inner_pan_depth_mm, pot_rounded_radius_mm);
+    }
 }
+
+module drip_pan() {
+    difference() {
+        translate([-3 * tray_thickness_mm, -3 * tray_thickness_mm, -riser_height_mm - tray_thickness_mm])
+            drip_pan_without_riser_groves();
+        tray_with_risers();
+    }
+}
+
+
+tray_with_risers();
+drip_pan();

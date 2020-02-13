@@ -9,8 +9,8 @@
 $fn=50;  // Increase the smoothness for nice round curves
 
 // Set the size of the grid (how many pots in your tray)
-num_pots_x = 2;
-num_pots_y = 4;
+num_pots_x = 3;
+num_pots_y = 3;
 
 // How big of a gap between adjacent trays
 interpot_spacing_mm = 2;
@@ -22,14 +22,14 @@ tray_thickness_mm = 2;
 tray_inset_depth_mm = 2;
 
 // The dimensions of the cylindrical risers on the bottom of the tray
-riser_radius_mm = 16;
+riser_radius_mm = 8;
 riser_height_mm = 6;
 
 // The dimensions and characteristics of the pots
-pot_top_edge_mm = 76;
-pot_bottom_edge_mm = 69;
-pot_height_mm = 61;
-pot_rounded_radius_mm = 25;
+pot_top_edge_mm = 30;
+pot_bottom_edge_mm = 20;
+pot_height_mm = 40;
+pot_rounded_radius_mm = 3;
 
 
 // Computed dimensions of the tray -- derived from the values set above

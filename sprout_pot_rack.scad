@@ -1,27 +1,32 @@
-// This is a little tray that you can hang sprouting pots in.
-// Designed to work with this pot:
+// This is a little rack that you can hang sprouting pots in.
+// The specific pot dimentions in this file are currently designed to work with
+// this pot:
 //    https://www.thingiverse.com/thing:3449179
-// Basically you can configure how many pots you want in your tray
-// and a few other qualities of the tray such as how big of risers you
+// Basically you can configure how many pots you want in your rack 
+// and a few other qualities of the rack such as how big of risers you
 // want under it to let water drip out.
 // It works nicely with openscad in my experimentation.
+//
+// If you wanted to use a different sized pot it should be pretty easy as long
+// as the pots are taper squares with rounded corners.  I've used it with a bigger
+// pot I made and it worked great with them too.
 
 $fn=50;  // Increase the smoothness for nice round curves
 
-// Set the size of the grid (how many pots in your tray)
+// Set the size of the grid (how many pots in your rack)
 num_pots_x = 3;
 num_pots_y = 3;
 
-// How big of a gap between adjacent trays
+// How big of a gap between adjacent pots (the holes in the rack)
 interpot_spacing_mm = 2;
 
-// How big of an outer lip the tray has around the outerpost pots
-tray_thickness_mm = 2;
+// How big of an outer lip the rack has around the outerpost pots
+rack_thickness_mm = 2;
 
-// How far *below* the top lip of the pots the tray stops
-tray_inset_depth_mm = 2;
+// How far *below* the top lip of the pots the rack stops
+rack_inset_depth_mm = 2;
 
-// The dimensions of the cylindrical risers on the bottom of the tray
+// The dimensions of the cylindrical risers on the bottom of the rack 
 riser_radius_mm = 8;
 riser_height_mm = 6;
 
@@ -31,15 +36,14 @@ pot_bottom_edge_mm = 20;
 pot_height_mm = 40;
 pot_rounded_radius_mm = 3;
 
-
-// Computed dimensions of the tray -- derived from the values set above
-tray_dim_x_mm = (pot_top_edge_mm + interpot_spacing_mm) * num_pots_x
+// Computed dimensions of the rack -- derived from the values set above
+rack_dim_x_mm = (pot_top_edge_mm + interpot_spacing_mm) * num_pots_x
                     - interpot_spacing_mm
-                    + tray_thickness_mm * 2;
-tray_dim_y_mm = (pot_top_edge_mm + interpot_spacing_mm) * num_pots_y
+                    + rack_thickness_mm * 2;
+rack_dim_y_mm = (pot_top_edge_mm + interpot_spacing_mm) * num_pots_y
                     - interpot_spacing_mm
-                    + tray_thickness_mm * 2;
-tray_dim_z_mm = pot_height_mm - tray_inset_depth_mm;
+                    + rack_thickness_mm * 2;
+rack_dim_z_mm = pot_height_mm - rack_inset_depth_mm;
 
 module rounded_box(x_dimension_mm, y_dimension_mm, z_dimension_mm, radius_mm) {
     hull() {
@@ -75,9 +79,9 @@ module grid_of_pots() {
     }
 }
 
-module tray_blank() {
-    translate([-tray_thickness_mm, -tray_thickness_mm, 0]) 
-        rounded_box(tray_dim_x_mm, tray_dim_y_mm, tray_dim_z_mm, pot_rounded_radius_mm);
+module rack_blank() {
+    translate([-rack_thickness_mm, -rack_thickness_mm, 0]) 
+        rounded_box(rack_dim_x_mm, rack_dim_y_mm, rack_dim_z_mm, pot_rounded_radius_mm);
 }
 
 module risers() {
@@ -92,48 +96,49 @@ module risers() {
             }
         }
 
-        translate([0, 0, -riser_height_mm]) tray_blank();
+        translate([0, 0, -riser_height_mm]) rack_blank();
     }
 }
 
-module tray_with_risers() {
+module rack_with_risers() {
     union() {
-        tray();
+        rack();
         risers();
     }
 }
 
-module tray() {
+module rack() {
     difference() {
-        tray_blank();
+        rack_blank();
         grid_of_pots();
     }
 }
 
-module drip_pan_without_riser_groves() {
-    inner_pan_dim_x_mm = tray_dim_x_mm + tray_thickness_mm * 2;
-    inner_pan_dim_y_mm = tray_dim_y_mm + tray_thickness_mm * 2;
-    inner_pan_depth_mm = riser_height_mm;
+module drip_tray_without_riser_groves() {
+    inner_tray_dim_x_mm = rack_dim_x_mm + rack_thickness_mm * 2;
+    inner_tray_dim_y_mm = rack_dim_y_mm + rack_thickness_mm * 2;
+    inner_tray_depth_mm = riser_height_mm;
 
-    pan_dim_x_mm = inner_pan_dim_x_mm + 2 * tray_thickness_mm;
-    pan_dim_y_mm = inner_pan_dim_y_mm + 2 * tray_thickness_mm;
-    pan_dim_z_mm = inner_pan_depth_mm + 2 * tray_thickness_mm;
+    tray_dim_x_mm = inner_tray_dim_x_mm + 2 * rack_thickness_mm;
+    tray_dim_y_mm = inner_tray_dim_y_mm + 2 * rack_thickness_mm;
+    tray_dim_z_mm = inner_tray_depth_mm + 2 * rack_thickness_mm;
 
     difference() {
-        rounded_box(pan_dim_x_mm, pan_dim_y_mm, pan_dim_z_mm, pot_rounded_radius_mm);
-        translate([tray_thickness_mm, tray_thickness_mm, 2 * tray_thickness_mm])
-            rounded_box(inner_pan_dim_x_mm, inner_pan_dim_y_mm, inner_pan_depth_mm, pot_rounded_radius_mm);
+        rounded_box(tray_dim_x_mm, tray_dim_y_mm, tray_dim_z_mm, pot_rounded_radius_mm);
+        translate([rack_thickness_mm, rack_thickness_mm, 2 * rack_thickness_mm])
+            rounded_box(inner_tray_dim_x_mm, inner_tray_dim_y_mm, inner_tray_depth_mm, pot_rounded_radius_mm);
     }
 }
 
-module drip_pan() {
+module drip_tray() {
     difference() {
-        translate([-3 * tray_thickness_mm, -3 * tray_thickness_mm, -riser_height_mm - tray_thickness_mm])
-            drip_pan_without_riser_groves();
-        tray_with_risers();
+        translate([-3 * rack_thickness_mm, -3 * rack_thickness_mm, -riser_height_mm - rack_thickness_mm])
+            drip_tray_without_riser_groves();
+        rack_with_risers();
     }
 }
 
 
-tray_with_risers();
-//drip_pan();
+// Uncomment one of these at a time to render either the rack or the drip tray
+rack_with_risers();
+//drip_tray();

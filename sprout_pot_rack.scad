@@ -216,7 +216,7 @@ module drip_tray() {
 }
 
 
-// Uncomment one of these at a time to render either the rack or the drip tray
+// Uncomment one of these at a time to render either the rack, the drip tray, a pot, or a pot insert
 //rack_with_risers();
 //drip_tray();
 //pot();

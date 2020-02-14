@@ -14,7 +14,7 @@
 $fn=50;  // Increase the smoothness for nice round curves
 
 // Set the size of the grid (how many pots in your rack)
-num_pots_x = 3;
+num_pots_x = 2;
 num_pots_y = 3;
 
 // How big of a gap between adjacent pots (the holes in the rack)
@@ -27,14 +27,14 @@ rack_thickness_mm = 2;
 rack_inset_depth_mm = 2;
 
 // The dimensions of the cylindrical risers on the bottom of the rack 
-riser_radius_mm = 8;
-riser_height_mm = 6;
+riser_radius_mm = 16;
+riser_height_mm = 16;
 
 // The dimensions and characteristics of the pots
-pot_top_edge_mm = 30;
-pot_bottom_edge_mm = 20;
-pot_height_mm = 40;
-pot_rounded_radius_mm = 3;
+pot_top_edge_mm = 76;
+pot_bottom_edge_mm = 70;
+pot_height_mm = 61;
+pot_rounded_radius_mm = 25;
 
 // Computed dimensions of the rack -- derived from the values set above
 rack_dim_x_mm = (pot_top_edge_mm + interpot_spacing_mm) * num_pots_x
@@ -115,8 +115,8 @@ module rack() {
 }
 
 module drip_tray_without_riser_groves() {
-    inner_tray_dim_x_mm = rack_dim_x_mm + rack_thickness_mm * 2;
-    inner_tray_dim_y_mm = rack_dim_y_mm + rack_thickness_mm * 2;
+    inner_tray_dim_x_mm = rack_dim_x_mm + rack_thickness_mm * 4;
+    inner_tray_dim_y_mm = rack_dim_y_mm + rack_thickness_mm * 4;
     inner_tray_depth_mm = riser_height_mm;
 
     tray_dim_x_mm = inner_tray_dim_x_mm + 2 * rack_thickness_mm;
@@ -132,7 +132,7 @@ module drip_tray_without_riser_groves() {
 
 module drip_tray() {
     difference() {
-        translate([-3 * rack_thickness_mm, -3 * rack_thickness_mm, -riser_height_mm - rack_thickness_mm])
+        translate([-4 * rack_thickness_mm, -4 * rack_thickness_mm, -riser_height_mm - rack_thickness_mm])
             drip_tray_without_riser_groves();
         rack_with_risers();
     }

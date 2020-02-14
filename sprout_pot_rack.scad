@@ -106,6 +106,46 @@ module pot_blank() {
     }
 }
 
+module pot_insert() {
+    pot_insert_edge_mm = pot_bottom_edge_mm - pot_wall_thickness_mm * 3;
+
+    drain_length_mm = pot_insert_edge_mm - pot_rounded_radius_mm * 2;
+    drain_depth_mm = drain_length_mm / 3;
+
+    riser_height = pot_wall_thickness_mm * 2;
+    riser_thickness_mm = drain_depth_mm / 2;
+
+    // The main plate with drains cut out
+    difference() {
+        // The main plate that makes up the insert
+        translate([-pot_insert_edge_mm / 2, -pot_insert_edge_mm / 2, -pot_wall_thickness_mm / 2])
+            rounded_box(pot_insert_edge_mm, pot_insert_edge_mm, pot_wall_thickness_mm, pot_rounded_radius_mm);
+
+        // The rectangular drains (one on each edge of the square)
+        for (r = [0 : 90 : 270]) {
+            rotate(r)
+                translate([0, pot_insert_edge_mm / 2, 0])
+                    cube([drain_length_mm, drain_depth_mm, pot_wall_thickness_mm], center = true);
+        }
+    }
+
+    // Adding the risers
+    translate([0, 0, riser_height / 2 + pot_wall_thickness_mm / 2]) {
+        intersection() {
+            translate([-pot_insert_edge_mm / 2, -pot_insert_edge_mm / 2, -riser_height / 2])
+                rounded_box(pot_insert_edge_mm, pot_insert_edge_mm, riser_height, pot_rounded_radius_mm);
+            for (r = [0 : 90 : 270]) {
+                rotate(r) {
+                    translate([pot_insert_edge_mm / 2, drain_length_mm / 2 + riser_thickness_mm / 2, 0])
+                        cube([pot_drain_lip_mm * 2, riser_thickness_mm, riser_height_mm], center = true);
+                    translate([pot_insert_edge_mm / 2, -drain_length_mm / 2 - riser_thickness_mm / 2, 0])
+                        cube([pot_drain_lip_mm * 2, riser_thickness_mm, riser_height_mm], center = true);
+                }
+            }
+        }
+    }
+}
+
 module grid_of_pots() {
     for (x = [0 : num_pots_x - 1]) {
         for (y = [0 : num_pots_y - 1]) {
@@ -121,7 +161,7 @@ module rack_blank() {
         rounded_box(rack_dim_x_mm, rack_dim_y_mm, rack_dim_z_mm, pot_rounded_radius_mm);
 }
 
-module risers() {
+module rack_risers() {
     intersection() {
         for (x = [0 : num_pots_x]) {
             for (y = [0 : num_pots_y]) {
@@ -140,7 +180,7 @@ module risers() {
 module rack_with_risers() {
     union() {
         rack();
-        risers();
+        rack_risers();
     }
 }
 
@@ -179,4 +219,5 @@ module drip_tray() {
 // Uncomment one of these at a time to render either the rack or the drip tray
 //rack_with_risers();
 //drip_tray();
-pot();
+//pot();
+pot_insert();

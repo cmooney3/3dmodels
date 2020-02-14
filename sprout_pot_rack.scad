@@ -112,8 +112,8 @@ module pot_insert() {
     drain_length_mm = pot_insert_edge_mm - pot_rounded_radius_mm * 2;
     drain_depth_mm = drain_length_mm / 3;
 
-    riser_height = pot_wall_thickness_mm * 2;
-    riser_thickness_mm = drain_depth_mm / 2;
+    insert_riser_height_mm = pot_wall_thickness_mm * 2;
+    insert_riser_thickness_mm = drain_depth_mm / 2;
 
     // The main plate with drains cut out
     difference() {
@@ -130,16 +130,16 @@ module pot_insert() {
     }
 
     // Adding the risers
-    translate([0, 0, riser_height / 2 + pot_wall_thickness_mm / 2]) {
+    translate([0, 0, insert_riser_height_mm / 2 + pot_wall_thickness_mm / 2]) {
         intersection() {
-            translate([-pot_insert_edge_mm / 2, -pot_insert_edge_mm / 2, -riser_height / 2])
-                rounded_box(pot_insert_edge_mm, pot_insert_edge_mm, riser_height, pot_rounded_radius_mm);
+            translate([-pot_insert_edge_mm / 2, -pot_insert_edge_mm / 2, -insert_riser_height_mm / 2])
+                rounded_box(pot_insert_edge_mm, pot_insert_edge_mm, insert_riser_height_mm, pot_rounded_radius_mm);
             for (r = [0 : 90 : 270]) {
                 rotate(r) {
-                    translate([pot_insert_edge_mm / 2, drain_length_mm / 2 + riser_thickness_mm / 2, 0])
-                        cube([pot_drain_lip_mm * 2, riser_thickness_mm, riser_height_mm], center = true);
-                    translate([pot_insert_edge_mm / 2, -drain_length_mm / 2 - riser_thickness_mm / 2, 0])
-                        cube([pot_drain_lip_mm * 2, riser_thickness_mm, riser_height_mm], center = true);
+                    translate([pot_insert_edge_mm / 2, drain_length_mm / 2 + insert_riser_thickness_mm / 2, 0])
+                        cube([pot_drain_lip_mm * 2, insert_riser_thickness_mm, insert_riser_height_mm], center = true);
+                    translate([pot_insert_edge_mm / 2, -drain_length_mm / 2 - insert_riser_thickness_mm / 2, 0])
+                        cube([pot_drain_lip_mm * 2, insert_riser_thickness_mm, insert_riser_height_mm], center = true);
                 }
             }
         }
@@ -173,7 +173,9 @@ module rack_risers() {
             }
         }
 
-        translate([0, 0, -riser_height_mm]) rack_blank();
+        // Note it's scaled to stretch it comically long since we're really only trying
+        // to intersect in x & y, no other reason
+        translate([0, 0, -riser_height_mm]) scale([1, 1, 100]) rack_blank();
     }
 }
 

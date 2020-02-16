@@ -14,21 +14,23 @@
 $fn=50;  // Increase the smoothness for nice round curves
 
 // Set the size of the grid (how many pots in your rack)
-num_pots_x = 2;
-num_pots_y = 3;
+num_pots_x = 1;
+num_pots_y = 1;
 
 // How big of a gap between adjacent pots (the holes in the rack)
 interpot_spacing_mm = 2;
 
 // How big of an outer lip the rack has around the outerpost pots
-rack_thickness_mm = 2;
+rack_thickness_mm = 1;
 
 // How far *below* the top lip of the pots the rack stops
 rack_inset_depth_mm = 2;
 
 // The dimensions of the cylindrical risers on the bottom of the rack 
-riser_radius_mm = 16;
-riser_height_mm = 16;
+riser_radius_mm = 15;
+riser_height_mm = 6;
+
+pot_wiggle_room_mm = 0.25;
 
 // The dimensions and characteristics of the pots
 pot_wall_thickness_mm = 0.8;
@@ -61,17 +63,17 @@ module rounded_box(x_dimension_mm, y_dimension_mm, z_dimension_mm, radius_mm) {
     }
 }
 
-module pot() {
+module pot(top_edge_mm, bottom_edge_mm) {
     slice_height_mm = 0.1;
 
-    pot_inside_top_edge_mm = pot_top_edge_mm - pot_wall_thickness_mm * 2;
-    pot_inside_bottom_edge_mm = pot_bottom_edge_mm - pot_wall_thickness_mm * 2;
+    pot_inside_top_edge_mm = top_edge_mm - pot_wall_thickness_mm * 2;
+    pot_inside_bottom_edge_mm = bottom_edge_mm - pot_wall_thickness_mm * 2;
 
-    pot_bottom_edge_inset_mm = (pot_top_edge_mm - pot_bottom_edge_mm) / 2;    
+    pot_bottom_edge_inset_mm = (top_edge_mm - bottom_edge_mm) / 2;
     pot_inside_bottom_edge_inset_mm = pot_bottom_edge_inset_mm + pot_wall_thickness_mm;
 
-    drain_hole_size = pot_bottom_edge_mm - pot_drain_lip_mm;
-    drain_hole_inset_mm = (pot_top_edge_mm - drain_hole_size) / 2;
+    drain_hole_size = bottom_edge_mm - pot_drain_lip_mm;
+    drain_hole_inset_mm = (top_edge_mm - drain_hole_size) / 2;
     drain_hole_rounded_radius_mm = pot_rounded_radius_mm * pot_drain_hole_rounded_radius_multiplier;
 
     difference() {
@@ -80,9 +82,9 @@ module pot() {
             // The outside of the pot
             hull() {
                 translate([0, 0, pot_height_mm - slice_height_mm])
-                    rounded_box(pot_top_edge_mm, pot_top_edge_mm, slice_height_mm, pot_rounded_radius_mm);
+                    rounded_box(top_edge_mm, top_edge_mm, slice_height_mm, pot_rounded_radius_mm);
                 translate([pot_bottom_edge_inset_mm, pot_bottom_edge_inset_mm, 0])
-                    rounded_box(pot_bottom_edge_mm, pot_bottom_edge_mm, slice_height_mm, pot_rounded_radius_mm);
+                    rounded_box(bottom_edge_mm, bottom_edge_mm, slice_height_mm, pot_rounded_radius_mm);
             }
 
             // The inside of the pot
@@ -102,7 +104,11 @@ module pot() {
 
 module pot_blank() {
     hull() {
-        pot();
+        // The translate compensates for the added wiggle room size and keeps the resulting
+        // pot centered in the same spot as the as it would've been without the wiggle room added
+        translate([-pot_wiggle_room_mm / 2, -pot_wiggle_room_mm / 2, 0]) {
+            pot(pot_top_edge_mm + pot_wiggle_room_mm, pot_bottom_edge_mm + pot_wiggle_room_mm);
+        }
     }
 }
 
@@ -219,7 +225,7 @@ module drip_tray() {
 
 
 // Uncomment one of these at a time to render either the rack, the drip tray, a pot, or a pot insert
-//rack_with_risers();
+rack_with_risers();
 //drip_tray();
-//pot();
-pot_insert();
+//pot(pot_top_edge_mm, pot_bottom_edge_mm);
+//pot_insert();

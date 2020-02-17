@@ -32,7 +32,7 @@ riser_height_mm = 16;
 
 pot_wiggle_room_mm = 0.1;
 pot_insert_wiggle_room_mm = 1.5;
-drip_tray_groove_wiggle_room_mm = 1.5;
+drip_tray_groove_wiggle_room_mm = 1.0;
 
 // The dimensions and characteristics of the pots
 pot_wall_thickness_mm = 0.8;
@@ -42,6 +42,9 @@ pot_height_mm = 91;
 pot_rounded_radius_mm = 25;
 pot_drain_lip_mm = 20;
 pot_drain_hole_rounded_radius_multiplier = 0.7;  // Use this to adust the curve in the drain hole
+
+
+drip_tray_extra_space_around_rack_mm = 10;
 
 // Computed dimensions of the rack -- derived from the values set above
 rack_dim_x_mm = (pot_top_edge_mm + interpot_spacing_mm) * num_pots_x
@@ -202,8 +205,8 @@ module rack_with_risers() {
 }
 
 module drip_tray_without_groves() {
-    inner_tray_dim_x_mm = rack_dim_x_mm + rack_thickness_mm * 4;
-    inner_tray_dim_y_mm = rack_dim_y_mm + rack_thickness_mm * 4;
+    inner_tray_dim_x_mm = rack_dim_x_mm + 2 * drip_tray_extra_space_around_rack_mm + drip_tray_groove_wiggle_room_mm;
+    inner_tray_dim_y_mm = rack_dim_y_mm + 2 * drip_tray_extra_space_around_rack_mm + drip_tray_groove_wiggle_room_mm;
     inner_tray_depth_mm = riser_height_mm;
 
     tray_dim_x_mm = inner_tray_dim_x_mm + 2 * rack_thickness_mm;
@@ -219,10 +222,13 @@ module drip_tray_without_groves() {
 
 module drip_tray() {
     difference() {
-        translate([-4 * rack_thickness_mm, -4 * rack_thickness_mm, -riser_height_mm - rack_thickness_mm])
+        translate([-rack_thickness_mm - drip_tray_extra_space_around_rack_mm - drip_tray_groove_wiggle_room_mm / 2,
+                   -rack_thickness_mm - drip_tray_extra_space_around_rack_mm - drip_tray_groove_wiggle_room_mm / 2,
+                   -riser_height_mm - rack_thickness_mm])
             drip_tray_without_groves();
-        translate([-rack_thickness_mm - drip_tray_groove_wiggle_room_mm / 2,
-                   -rack_thickness_mm - drip_tray_groove_wiggle_room_mm / 2,
+
+        translate([-drip_tray_groove_wiggle_room_mm / 2,
+                   -drip_tray_groove_wiggle_room_mm / 2,
                    -riser_height_mm])
             rounded_box(rack_dim_x_mm + drip_tray_groove_wiggle_room_mm,
                         rack_dim_y_mm + drip_tray_groove_wiggle_room_mm,

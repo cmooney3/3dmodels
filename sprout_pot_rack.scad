@@ -30,13 +30,13 @@ rack_inset_depth_mm = 2;
 riser_radius_mm = 15;
 riser_height_mm = 6;
 
-pot_wiggle_room_mm = 0.25;
+pot_wiggle_room_mm = 0.1;
 
 // The dimensions and characteristics of the pots
 pot_wall_thickness_mm = 0.8;
 pot_top_edge_mm = 76;
 pot_bottom_edge_mm = 70;
-pot_height_mm = 61;
+pot_height_mm = 91;
 pot_rounded_radius_mm = 25;
 pot_drain_lip_mm = 20;
 pot_drain_hole_rounded_radius_multiplier = 0.7;  // Use this to adust the curve in the drain hole

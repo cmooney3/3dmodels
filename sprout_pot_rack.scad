@@ -24,13 +24,15 @@ interpot_spacing_mm = 2;
 rack_thickness_mm = 1;
 
 // How far *below* the top lip of the pots the rack stops
-rack_inset_depth_mm = 2;
+rack_inset_depth_mm = 30;
 
 // The dimensions of the cylindrical risers on the bottom of the rack 
 riser_radius_mm = 15;
-riser_height_mm = 6;
+riser_height_mm = 16;
 
 pot_wiggle_room_mm = 0.1;
+pot_insert_wiggle_room_mm = 1.5;
+drip_tray_groove_wiggle_room_mm = 1.5;
 
 // The dimensions and characteristics of the pots
 pot_wall_thickness_mm = 0.8;
@@ -113,7 +115,7 @@ module pot_blank() {
 }
 
 module pot_insert() {
-    pot_insert_edge_mm = pot_bottom_edge_mm - pot_wall_thickness_mm * 3;
+    pot_insert_edge_mm = pot_bottom_edge_mm - pot_wall_thickness_mm * 2 - pot_insert_wiggle_room_mm;
 
     drain_length_mm = pot_insert_edge_mm - pot_rounded_radius_mm * 2;
     drain_depth_mm = drain_length_mm / 3;
@@ -143,9 +145,9 @@ module pot_insert() {
             for (r = [0 : 90 : 270]) {
                 rotate(r) {
                     translate([pot_insert_edge_mm / 2, drain_length_mm / 2 + insert_riser_thickness_mm / 2, 0])
-                        cube([pot_drain_lip_mm * 2, insert_riser_thickness_mm, insert_riser_height_mm], center = true);
+                        cube([pot_drain_lip_mm + 3, insert_riser_thickness_mm, insert_riser_height_mm], center = true);
                     translate([pot_insert_edge_mm / 2, -drain_length_mm / 2 - insert_riser_thickness_mm / 2, 0])
-                        cube([pot_drain_lip_mm * 2, insert_riser_thickness_mm, insert_riser_height_mm], center = true);
+                        cube([pot_drain_lip_mm + 3, insert_riser_thickness_mm, insert_riser_height_mm], center = true);
                 }
             }
         }
@@ -185,13 +187,6 @@ module rack_risers() {
     }
 }
 
-module rack_with_risers() {
-    union() {
-        rack();
-        rack_risers();
-    }
-}
-
 module rack() {
     difference() {
         rack_blank();
@@ -199,7 +194,14 @@ module rack() {
     }
 }
 
-module drip_tray_without_riser_groves() {
+module rack_with_risers() {
+    union() {
+        rack();
+        rack_risers();
+    }
+}
+
+module drip_tray_without_groves() {
     inner_tray_dim_x_mm = rack_dim_x_mm + rack_thickness_mm * 4;
     inner_tray_dim_y_mm = rack_dim_y_mm + rack_thickness_mm * 4;
     inner_tray_depth_mm = riser_height_mm;
@@ -218,14 +220,20 @@ module drip_tray_without_riser_groves() {
 module drip_tray() {
     difference() {
         translate([-4 * rack_thickness_mm, -4 * rack_thickness_mm, -riser_height_mm - rack_thickness_mm])
-            drip_tray_without_riser_groves();
-        rack_with_risers();
+            drip_tray_without_groves();
+        translate([-rack_thickness_mm - drip_tray_groove_wiggle_room_mm / 2,
+                   -rack_thickness_mm - drip_tray_groove_wiggle_room_mm / 2,
+                   -riser_height_mm])
+            rounded_box(rack_dim_x_mm + drip_tray_groove_wiggle_room_mm,
+                        rack_dim_y_mm + drip_tray_groove_wiggle_room_mm,
+                        rack_dim_z_mm,
+                        pot_rounded_radius_mm);
     }
 }
 
 
 // Uncomment one of these at a time to render either the rack, the drip tray, a pot, or a pot insert
-rack_with_risers();
-//drip_tray();
+//rack_with_risers();
+drip_tray();
 //pot(pot_top_edge_mm, pot_bottom_edge_mm);
 //pot_insert();

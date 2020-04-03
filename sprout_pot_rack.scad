@@ -27,22 +27,21 @@ rack_thickness_mm = 1;
 rack_inset_depth_mm = 30;
 
 // The dimensions of the cylindrical risers on the bottom of the rack 
-riser_radius_mm = 15;
+riser_radius_mm = 8;
 riser_height_mm = 16;
 
 pot_wiggle_room_mm = 0.1;
-pot_insert_wiggle_room_mm = 1.5;
+pot_insert_wiggle_room_mm = 0.5;
 drip_tray_groove_wiggle_room_mm = 1.0;
 
 // The dimensions and characteristics of the pots
 pot_wall_thickness_mm = 0.8;
-pot_top_edge_mm = 76;
-pot_bottom_edge_mm = 70;
-pot_height_mm = 91;
-pot_rounded_radius_mm = 25;
-pot_drain_lip_mm = 20;
+pot_top_edge_mm = 30;
+pot_bottom_edge_mm = 20;
+pot_height_mm = 40;
+pot_rounded_radius_mm = 3;
+pot_drain_lip_mm = 6;
 pot_drain_hole_rounded_radius_multiplier = 0.7;  // Use this to adust the curve in the drain hole
-
 
 drip_tray_extra_space_around_rack_mm = 10;
 
@@ -120,7 +119,7 @@ module pot_blank() {
 module pot_insert() {
     pot_insert_edge_mm = pot_bottom_edge_mm - pot_wall_thickness_mm * 2 - pot_insert_wiggle_room_mm;
 
-    drain_length_mm = pot_insert_edge_mm - pot_rounded_radius_mm * 2;
+    drain_length_mm = pot_insert_edge_mm - pot_rounded_radius_mm * 3.5;
     drain_depth_mm = drain_length_mm / 3;
 
     insert_riser_height_mm = pot_wall_thickness_mm * 2;
@@ -240,6 +239,6 @@ module drip_tray() {
 
 // Uncomment one of these at a time to render either the rack, the drip tray, a pot, or a pot insert
 //rack_with_risers();
-drip_tray();
+//drip_tray();
 //pot(pot_top_edge_mm, pot_bottom_edge_mm);
-//pot_insert();
+pot_insert();

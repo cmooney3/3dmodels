@@ -24,7 +24,7 @@ interpot_spacing_mm = 2;
 rack_thickness_mm = 1;
 
 // How far *below* the top lip of the pots the rack stops
-rack_inset_depth_mm = 30;
+rack_inset_depth_mm = 10;
 
 // The dimensions of the cylindrical risers on the bottom of the rack 
 riser_radius_mm = 8;
@@ -40,7 +40,7 @@ pot_top_edge_mm = 30;
 pot_bottom_edge_mm = 20;
 pot_height_mm = 40;
 pot_rounded_radius_mm = 3;
-pot_drain_lip_mm = 6;
+pot_drain_lip_mm = 8;
 pot_drain_hole_rounded_radius_multiplier = 0.7;  // Use this to adust the curve in the drain hole
 
 drip_tray_extra_space_around_rack_mm = 10;
@@ -240,5 +240,5 @@ module drip_tray() {
 // Uncomment one of these at a time to render either the rack, the drip tray, a pot, or a pot insert
 //rack_with_risers();
 //drip_tray();
-//pot(pot_top_edge_mm, pot_bottom_edge_mm);
-pot_insert();
+pot(pot_top_edge_mm, pot_bottom_edge_mm);
+//pot_insert();

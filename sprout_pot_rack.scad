@@ -14,8 +14,8 @@
 $fn=50;  // Increase the smoothness for nice round curves
 
 // Set the size of the grid (how many pots in your rack)
-num_pots_x = 1;
-num_pots_y = 1;
+num_pots_x = 3;
+num_pots_y = 3;
 
 // How big of a gap between adjacent pots (the holes in the rack)
 interpot_spacing_mm = 2;
@@ -240,5 +240,5 @@ module drip_tray() {
 // Uncomment one of these at a time to render either the rack, the drip tray, a pot, or a pot insert
 //rack_with_risers();
 //drip_tray();
-pot(pot_top_edge_mm, pot_bottom_edge_mm);
-//pot_insert();
+//pot(pot_top_edge_mm, pot_bottom_edge_mm);
+pot_insert();

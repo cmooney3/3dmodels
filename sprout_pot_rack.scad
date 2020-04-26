@@ -21,16 +21,16 @@
 $fn=50;
 
 // Set to true to generate the pot rack
-generate_rack = false;
+generate_rack = true;
 // Set to true to generate the drip tray
 generate_drip_tray = false;
 // Set to true to generate the body of a pot
-generate_pot = true;
+generate_pot = false;
 // Set to true to generate the inert that sits at the bottom of a pot
 generate_pot_insert = false;
 
 // How many pots in the grid of your rack (X direction)
-num_pots_x = 2;
+num_pots_x = 3;
 // How many pots in the grid of your rack (Y direction)
 num_pots_y = 2;
 

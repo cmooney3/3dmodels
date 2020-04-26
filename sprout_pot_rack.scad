@@ -1,23 +1,40 @@
-// This is a little rack that you can hang sprouting pots in.
-// The specific pot dimentions in this file are currently designed to work with
-// this pot:
-//    https://www.thingiverse.com/thing:3449179
-// Basically you can configure how many pots you want in your rack 
-// and a few other qualities of the rack such as how big of risers you
-// want under it to let water drip out.
-// It works nicely with openscad in my experimentation.
+// This file generates four different pieces that all work together to make a pot rock.
+// The four parts are:
+// 1. Pot -- This part is pretty obvious, it's the body of one of the pots that sit inside the rack.
+// 2. Pot Insert -- This is a little piece that sits in the bottom of the pot, to allow the water to drain out.  You need one insert per pot.
+// 3. Rack -- This part contains a grid of holes that the pots fit in.  It holds them nicely and lifts them up off the ground so they can drain.
+// 4. Drip Tray -- This part is a tray that sits under the rack to catch drips.
 //
-// If you wanted to use a different sized pot it should be pretty easy as long
-// as the pots are taper squares with rounded corners.  I've used it with a bigger
-// pot I made and it worked great with them too.
+// How to use:
+// 1. Configure your pot dimensions by setting the global variables below.
+// 2. Generate each of the four pieces in turn, by getting one of the four `generate_*` booleans to `true`
+// 3. Print them all separately and put them all together.  (You'll probably need several copies of the pot/insert to fill all the slots in your rack)
+//
+// Obviously there are a lot of different dimensions you can play with here, so if you're tinkering around it's pretty easy to make a mistake.
+// You may find it a good exercise to do it step by step in this order:
+// 1. Print a pot & insert and make sure they fit together and the size/shape you want.
+// 2. Next, tweak the parameters for the rack.  But -- print a 1x1 rack (and corresponding drip tray) instead of whatever size you really want.  This lets you make sure it looks right and that the pot fits in perfectly, before going forward.
+// 3. Once your little mini-rack looks good to you, go ahead and do it full-size.
 
-$fn=50;  // Increase the smoothness for nice round curves
 
-// Set the size of the grid (how many pots in your rack)
-num_pots_x = 2;
+// Increase the smoothness for nice round curves
+$fn=50;
+
+// Set to true to generate the pot rack
+generate_rack = true;
+// Set to true to generate the drip tray
+generate_drip_tray = false;
+// Set to true to generate the body of a pot
+generate_pot = false;
+// Set to true to generate the inert that sits at the bottom of a pot
+generate_pot_insert = false;
+
+// How many pots in the grid of your rack (X direction)
+num_pots_x = 3;
+// How many pots in the grid of your rack (Y direction)
 num_pots_y = 2;
 
-// How big of a gap between adjacent pots (the holes in the rack)
+// How big of a gap between adjacent pots in the rack
 interpot_spacing_mm = 2;
 
 // How big of an outer lip the rack has around the outerpost pots
@@ -26,27 +43,38 @@ rack_thickness_mm = 1;
 // How far *below* the top lip of the pots the rack stops
 rack_inset_depth_mm = 30;
 
-// The dimensions of the cylindrical risers on the bottom of the rack 
+// The radius of the cylindrical risers on the bottom of the rack 
 riser_radius_mm = 15;
+// The height of the cylindrical risers on the bottom of the rack 
 riser_height_mm = 16;
 
+// A little extra wiggle room added around the pots in the rack to accomodate error, this number worked on my machine.  If the pots sit "too high" or "too low" in your rack, this is the value you want to adjust
 pot_wiggle_room_mm = 0.1;
+// A little wiggle room around the insert at the bottom of the pot.  It's not super important to be precise
 pot_insert_wiggle_room_mm = 1.5;
+// A little wiggle room around the groove in the drip tray around the risers that sit in it. Also doesn't need to be precise
 drip_tray_groove_wiggle_room_mm = 1.0;
 
-// The dimensions and characteristics of the pots
+// The wall thickness of an individual pot
 pot_wall_thickness_mm = 0.8;
+// The size of the square that makes up the "top" of the pot
 pot_top_edge_mm = 76;
+// The size of the square that makes up the "bottom" of the pot
 pot_bottom_edge_mm = 70;
+// How tall the pots should be
 pot_height_mm = 91;
+// The radius of how rounded-off the corners of the pots are
 pot_rounded_radius_mm = 25;
+// How big the lip at the bottom of a pot is (that the insert sits on and water drains through)
 pot_drain_lip_mm = 20;
-pot_drain_hole_rounded_radius_multiplier = 0.7;  // Use this to adust the curve in the drain hole
+// A multiplier to adjust the round-ness of the drain hole at the bottom of the pot (mostly cosmetic)
+pot_drain_hole_rounded_radius_multiplier = 0.7;
 
 
+// How far the drip tray sticks out around the rack.
 drip_tray_extra_space_around_rack_mm = 10;
 
-// Computed dimensions of the rack -- derived from the values set above
+// Computed dimensions of the rack -- derived from the values set above, you shouldn't need to modify these.
 rack_dim_x_mm = (pot_top_edge_mm + interpot_spacing_mm) * num_pots_x
                     - interpot_spacing_mm
                     + rack_thickness_mm * 2;
@@ -237,9 +265,8 @@ module drip_tray() {
     }
 }
 
-
-// Uncomment one of these at a time to render either the rack, the drip tray, a pot, or a pot insert
-//rack_with_risers();
-drip_tray();
-//pot(pot_top_edge_mm, pot_bottom_edge_mm);
-//pot_insert();
+// This actually generates the various parts of the pot.  You can turn them on/off with global variables at the top of the file.
+if (generate_rack) { rack_with_risers(); }
+if (generate_drip_tray) { drip_tray(); }
+if (generate_pot) { pot(pot_top_edge_mm, pot_bottom_edge_mm); }
+if (generate_pot_insert) { pot_insert(); }

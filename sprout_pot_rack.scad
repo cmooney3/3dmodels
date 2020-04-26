@@ -14,8 +14,8 @@
 $fn=50;  // Increase the smoothness for nice round curves
 
 // Set the size of the grid (how many pots in your rack)
-num_pots_x = 1;
-num_pots_y = 1;
+num_pots_x = 2;
+num_pots_y = 2;
 
 // How big of a gap between adjacent pots (the holes in the rack)
 interpot_spacing_mm = 2;

@@ -7,7 +7,7 @@
 //
 // How to use:
 // 1. Configure your pot dimensions by setting the global variables below.
-// 2. Generate each of the four pieces in turn, by getting one of the four `generate_*` booleans to `true`
+// 2. Generate each of the four pieces in turn, by getting one of the four `generate_*` variables to `1` and the others all to `0`
 // 3. Print them all separately and put them all together.  (You'll probably need several copies of the pot/insert to fill all the slots in your rack)
 //
 // Obviously there are a lot of different dimensions you can play with here, so if you're tinkering around it's pretty easy to make a mistake.
@@ -21,13 +21,13 @@
 $fn=50;
 
 // Set to true to generate the pot rack
-generate_rack = true;
+generate_rack = 1;
 // Set to true to generate the drip tray
-generate_drip_tray = false;
+generate_drip_tray = 0;
 // Set to true to generate the body of a pot
-generate_pot = false;
+generate_pot = 0;
 // Set to true to generate the inert that sits at the bottom of a pot
-generate_pot_insert = false;
+generate_pot_insert = 0;
 
 // How many pots in the grid of your rack (X direction)
 num_pots_x = 3;
